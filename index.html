@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartTodo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+</head>
+<body class="dark">
+
+  <div class="app" id="app">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="logo">
+        <div class="logo-icon"><i class="ti ti-check"></i></div>
+        <span class="logo-name">SmartTodo</span>
+      </div>
+      <button class="toggle-btn" id="modeBtn" onclick="toggleMode()">
+        <i class="ti ti-sun"></i>
+        <span>Light mode</span>
+      </button>
+    </header>
+
+    <!-- Greeting -->
+    <section class="greeting">
+      <h1 id="greetingText">Stay on track today ✦</h1>
+      <p id="greetingDate"></p>
+    </section>
+
+    <!-- Summary Stats -->
+    <section class="summary-stats">
+      <div class="stat-card accent">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">Total tasks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="completedCount">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="pendingCount">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </section>
+
+    <!-- Add Task -->
+    <section class="add-section">
+      <div class="input-row">
+        <input type="text" id="taskInput" placeholder="Add a new task..." />
+        <button class="add-btn" onclick="openAddModal()">
+          <i class="ti ti-plus"></i> Add
+        </button>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <section class="search-section">
+      <div class="search-wrap">
+        <i class="ti ti-search search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search tasks..." oninput="renderTasks()" />
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+      <button class="chip active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="chip" data-filter="pending" onclick="setFilter('pending')">Pending</button>
+      <button class="chip" data-filter="completed" onclick="setFilter('completed')">Completed</button>
+      <button class="chip" data-filter="high" onclick="setFilter('high')">High priority</button>
+    </section>
+
+    <!-- Progress -->
+    <section class="progress-section">
+      <div class="progress-label">
+        <span>Today's progress</span>
+        <span id="progressText">0 of 0 done · 0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <!-- Task List -->
+    <section class="task-section">
+      <div class="section-label">Pending</div>
+      <div class="task-list" id="pendingList"></div>
+
+      <div class="section-label" id="completedLabel">Completed</div>
+      <div class="task-list" id="completedList"></div>
+
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="ti ti-clipboard-off"></i>
+        <p>No tasks yet. Add one above!</p>
+      </div>
+    </section>
+
+    <!-- Stats Dashboard -->
+    <section class="dashboard">
+      <div class="dashboard-title">
+        <i class="ti ti-chart-bar"></i> Statistics
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card accent">
+          <div class="dash-card-num" id="weeklyCount">0</div>
+          <div class="dash-card-label">Completed this week</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-num" id="dueTodayCount">0</div>
+          <div class="dash-card-label">Due today</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-num" id="dashPending">0</div>
+          <div class="dash-card-label">Pending tasks</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-num" id="completionRate">0%</div>
+          <div class="dash-card-label">Completion rate</div>
+        </div>
+      </div>
+
+      <div class="prio-section">
+        <div class="prio-label">Priority distribution</div>
+        <div class="prio-row">
+          <span class="prio-name">High</span>
+          <div class="prio-bar-wrap"><div class="prio-bar high" id="highBar"></div></div>
+          <span class="prio-count" id="highCount">0</span>
+        </div>
+        <div class="prio-row">
+          <span class="prio-name">Medium</span>
+          <div class="prio-bar-wrap"><div class="prio-bar med" id="medBar"></div></div>
+          <span class="prio-count" id="medCount">0</span>
+        </div>
+        <div class="prio-row">
+          <span class="prio-name">Low</span>
+          <div class="prio-bar-wrap"><div class="prio-bar low" id="lowBar"></div></div>
+          <span class="prio-count" id="lowCount">0</span>
+        </div>
+      </div>
+
+      <div class="completion-section">
+        <div class="completion-label">
+          <span>Overall completion</span>
+          <span id="overallRate">0%</span>
+        </div>
+        <div class="completion-bar-wrap">
+          <div class="completion-bar" id="overallBar"></div>
+        </div>
+      </div>
+
+      <button class="export-btn" onclick="exportCSV()">
+        <i class="ti ti-download"></i> Export tasks as CSV
+      </button>
+    </section>
+
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add new task</h2>
+        <button class="icon-btn" onclick="closeAddModal()"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <label>Task name</label>
+        <input type="text" id="modalTaskName" placeholder="What needs to be done?" />
+        <label>Description</label>
+        <textarea id="modalDesc" placeholder="Add details (optional)..."></textarea>
+        <label>Due date</label>
+        <input type="date" id="modalDueDate" />
+        <label>Priority</label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="priority" value="high" /> High</label>
+          <label class="radio-label"><input type="radio" name="priority" value="medium" checked /> Medium</label>
+          <label class="radio-label"><input type="radio" name="priority" value="low" /> Low</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" onclick="closeAddModal()">Cancel</button>
+        <button class="save-btn" onclick="saveTask()">Save task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteOverlay" onclick="closeDeleteModal(event)">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>Delete task?</h2>
+        <button class="icon-btn" onclick="closeDeleteModal()"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text2);font-size:13px;">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+        <button class="delete-confirm-btn" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
