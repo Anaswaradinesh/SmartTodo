@@ -5,15 +5,12 @@ A clean, responsive task manager web app built with vanilla HTML, CSS, and JavaS
 🔗 **Live Demo:** [anaswaradinesh.github.io/SmartTodo](https://anaswaradinesh.github.io/SmartTodo/)
 
 ---
-
 ## Screenshots
 
-| Light Mode | Dark Mode |
-|-----------|-----------|
-| ![Light mode](screenshots/screenshot-light.png) | ![Dark mode](screenshots/screenshot-dark.png) |
-
-![Statistics](screenshots/screenshot-stats.png)
-
+![Light Mode](assets/light%20mode1.png)
+![Light Mode 2](assets/light%20mode2.png)
+![Dark Mode](assets/dark%20mode.png)
+![CSV Report](assets/csv%20report.png)
 ---
 
 ## Features
